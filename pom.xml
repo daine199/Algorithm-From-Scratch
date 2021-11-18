@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.6.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>com.thunneycomb</groupId>
+	<artifactId>thunneycomb-autotest-base</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>thunneycomb-autotest-base</name>
+	<description>Thunneycomb 自动化脚手架</description>
+
+	<properties>
+		<testng-xml-name>testng.xml</testng-xml-name>
+		<java.version>1.8</java.version>
+		<testng.version>6.9.8</testng.version>
+		<surefire.version>3.0.0-M3</surefire.version>
+		<fastjson.version>1.2.62</fastjson.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<!--原生starter 只支持JUnit-->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!--fastjson 越来越多坑，也可以考虑不用该组件-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!--用于支持springboot 编译命令行工具集-->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- 用于支持 maven spring-testng 集成测试驱动
+			1. 如果要做简单的单元测试，需要注释掉surefire插件，会有不小开销
+			2. surefire的关于单元测试的增强，springboot-test-starter完全可以满足
+			3. 所以如果不是集成测试和场景测试，可以直接注释掉这个插件。
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.version}</version>
+
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/testngxml/${testng-xml-name}</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+
+			<!--用于支持复杂编译配置-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<!--<resources>-->
+			<!--<resource>-->
+				<!--<directory>${basedir}/src/</directory>-->
+			<!--</resource>-->
+
+
+		<!--</resources>-->
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation></activation>
+			<properties>
+				<conf-dir>dev</conf-dir>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/profiles/dev</directory>
+					</resource>
+				</resources>
+				<testResources>
+					<testResource>
+						<directory>src/test/profiles/dev</directory>
+					</testResource>
+				</testResources>
+			</build>
+		</profile>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<conf-dir>test</conf-dir>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/profiles/test</directory>
+					</resource>
+				</resources>
+				<testResources>
+					<testResource>
+						<directory>src/test/profiles/test</directory>
+					</testResource>
+				</testResources>
+			</build>
+		</profile>
+	</profiles>
+</project>

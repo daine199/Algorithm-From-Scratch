@@ -1,0 +1,26 @@
+[
+  {
+    "Priority": "P0",
+    "CaseIndex": "7124573",
+    "CaseName": "测试用例组装",
+    "Req": {
+      "id": "8937"
+    },
+    "Exp": {
+      "status": "OK"
+    },
+    "Comment": "test123!"
+  },
+  {
+    "Priority": "P0",
+    "CaseIndex": "7124574",
+    "CaseName": "测试用例组装2",
+    "Req": {
+      "id": "8938"
+    },
+    "Exp": {
+      "status": "OK"
+    },
+    "Comment": "test123!"
+  }
+]
