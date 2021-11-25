@@ -62,6 +62,24 @@ public class DataUtility {
 
     }
 
+    public static Object[][] getArrays (String filename) {
+        try {
+            String filePathOri = Thread.currentThread().getContextClassLoader().getResource(filename).getFile();
+            String filePath = java.net.URLDecoder.decode(filePathOri, "UTF-8");
+            String filecontent = readFile(filePath);
+
+            JSONArray testArray = JSONArray.parseArray(filecontent);
+            Object[][] objects = new Object[testArray.size()][1];
+            for (int i = 0 ; i < testArray.size(); i++) {
+                int[] prices = testArray.getJSONObject(i).getObject("prices", int[].class);
+                objects[i][0] = prices;
+            }
+            return objects;
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("classpath 中未找到测试数据文件 %s，请检查classpath配置或profile配置,", filename), e);
+        }
+    }
+
     public static String readFile(String fileName) {
 
         File file = new File(fileName);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.thunneycomb.thunneycombarchtype.algorithm.SortAlgorithm.quickSort;
+
 public class ArraysAlgorithm {
 
     public static int removeDuplicates(int[] nums) {
@@ -80,88 +82,74 @@ public class ArraysAlgorithm {
         return removeDuplicates_2(arr);
     }
 
-    public static int[] quickSort(int[] arr, int low, int high) {
+    public static int maxProfit(int[] prices) {
         /**
-         * 快速排序
+         * 贪心算法
+         * 1. 初始3个核心变量， 1-是否持股；2-持股价格；3-收益
+         * 2. 用while 或 for 循环，用一个变量对齐下标
+         * 3. 由于买股票是按照日期顺序的，所以只用遍历一遍
+         * 4. 核心在于高买低卖，遍历过程只要明天比今天高，则今天买入，如果明天比今天低，则今天卖出，其他条件都忽略
+         * 5. 在上面的核心逻辑下补充条件，必须不持股才能买入， 必须持股才能卖出
+         * 6. 用while写法，天数在全局计算，如果持续涨，会一直不卖，最后可以直接用day坐标价格减去持股价格得到最后一次利润
+         * 7. 用for写法， 最后不知道最后一天是哪一天，但可以用数组长度替换。
          */
-        int p, i, j, temp;
+        int max_profit = 0;
+        if (prices == null || prices.length < 2) return max_profit;
+        boolean is_buy = false;
+        int in_hand = 0;
+        int day = 0;
+//        int[] nums = new int[] {1, 1, 2, 2, 3};
 
-        if (low >= high) return new int[]{};
-
-        p = arr[low];
-        i = low;
-        j = high;
-        while (i < j) {
-            while (arr[j] >= p && i < j) j--;
-            while (arr[i] <= p && i < j) i++;
-
-            temp = arr[j];
-            arr[j] = arr[i];
-            arr[i] = temp;
-        }
-        arr[low] = arr[i];
-        arr[i] = p;
-
-        quickSort(arr, low, j - 1);
-        quickSort(arr, j + 1, high);
-
-        return arr;
-    }
-
-    public static int[] bubSort_0(int[] arr) {
-        /**
-         * 原始冒泡
-         */
-        long start_time = System.nanoTime();
-        long start_time_ms = System.currentTimeMillis();
-        int[] arr_done = new int[]{};
-        int swap = 0;
-        for(int n = 0; n < arr.length; n++) {
-            for (int i = 0; i < arr.length -1; i++)
-            if (arr[i] > arr[i+1]) {
-                swap = arr[i]; arr[i] = arr[i+1]; arr[i+1] = swap;
-            }
-        }
-        for (int i = 0; i < arr.length; i++) {
-        System.out.println(arr[i]);
-        }
-        long end_time = System.nanoTime();
-        long end_time_ms = System.currentTimeMillis();
-        System.out.println(String.format("bugSort_0运行时长%s ns (%s ms)",(end_time - start_time), (end_time_ms - start_time_ms)));
-        return arr_done;
-    }
-
-    public static int[] bubSort_1(int[] arr) {
-        /**
-         * 优化1 如果出现已排好的情况，则直接跳过计算
-         */
-        long start_time = System.nanoTime();
-        long start_time_ms = System.currentTimeMillis();
-        int[] arr_done = new int[]{};
-
-        int swap = 0;
-        boolean flag = true; // 默认是需要交换来完成排序
-        for(int n = 0; n < arr.length; n++) {
-            if (flag) { // 判断需要交换标志位， 一旦内部排序逻辑发现此次已经完全不需要交换时，提前结束排序
-                flag = false; // 设定下次不需要执行
-                for (int i = 0; i < arr.length -1; i++) {
-                    if (arr[i] > arr[i+1]) {
-                        flag = true; // 循环中一旦发生过交换，则设置下次需要继续交换
-                        swap = arr[i]; arr[i] = arr[i+1]; arr[i+1] = swap;
-                    }
+        while(day < prices.length - 1) {
+            if (prices[day] < prices[day + 1]) {
+                if (!is_buy) {
+                    is_buy = true;
+                    in_hand = prices[day];
                 }
             }
+            else {
+                if (is_buy) {
+                    is_buy = false;
+                    max_profit += prices[day] - in_hand;
+                }
+            }
+            day++;
+        }
+        if (is_buy) max_profit += prices[day] - in_hand;
+        return max_profit;
+    }
+
+    public static int maxProfit_1(int[] prices) {
+        /**
+         * 1. 设定基础参数 是否买入 in_hand, 利润 max_profit, 买入的价格 price
+         * 2. 日期和价格已确认，所以遍历一次
+         * 3. 当明天比今天贵，且手上没有股票，就买入, 如果手上有股票，就啥事不做
+         * 4. 当明天比今天便宜， 且手上有股票，就卖出，如果手上没股票，就啥事也不做
+         * 5. 如果股票一直涨，遍历结束后肯定遇不到4的情况，手上还有股票，此时可以直接卖掉
+         */
+
+        // 1.
+        boolean in_hand = false;
+        int max_profit = 0;
+        int in_hand_price = 0;
+        // 2.
+        for (int day = 0; day < prices.length - 1; day++) {
+            // 3.
+            if (prices[day] < prices[day + 1] && in_hand == false) {
+                in_hand = true;
+                in_hand_price = prices[day];
+            }
+            // 4.
+            if (prices[day] > prices[day + 1] && in_hand == true) {
+                in_hand = false;
+                max_profit += prices[day] - in_hand_price;
+            }
+        }
+        // 5.
+        if (in_hand) {
+            max_profit += prices[prices.length - 1] - in_hand_price;
         }
 
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(arr[i]);
-        }
-
-        long end_time = System.nanoTime();
-        long end_time_ms = System.currentTimeMillis();
-        long time = end_time - start_time;
-        long time_ms = end_time_ms - start_time_ms;
-        System.out.println(String.format("bugSort_1运行时长%s ns (%s ms)", time, time_ms));
-        return arr_done;
+        return max_profit;
     }
 }
