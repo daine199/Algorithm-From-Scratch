@@ -7,7 +7,7 @@ public class SortAlgorithm {
          */
         int p, i, j, temp;
 
-        if (low >= high) return new int[]{};
+        if (low >= high) return arr;
 
         p = arr[low];
         i = low;
@@ -35,7 +35,6 @@ public class SortAlgorithm {
          */
         long start_time = System.nanoTime();
         long start_time_ms = System.currentTimeMillis();
-        int[] arr_done = new int[]{};
         int swap = 0;
         for(int n = 0; n < arr.length; n++) {
             for (int i = 0; i < arr.length -1; i++)
@@ -49,7 +48,7 @@ public class SortAlgorithm {
         long end_time = System.nanoTime();
         long end_time_ms = System.currentTimeMillis();
         System.out.println(String.format("bugSort_0运行时长%s ns (%s ms)",(end_time - start_time), (end_time_ms - start_time_ms)));
-        return arr_done;
+        return arr;
     }
 
     public static int[] bubSort_1(int[] arr) {
@@ -58,7 +57,6 @@ public class SortAlgorithm {
          */
         long start_time = System.nanoTime();
         long start_time_ms = System.currentTimeMillis();
-        int[] arr_done = new int[]{};
 
         int swap = 0;
         boolean flag = true; // 默认是需要交换来完成排序
@@ -85,7 +83,7 @@ public class SortAlgorithm {
         long time = end_time - start_time;
         long time_ms = end_time_ms - start_time_ms;
         System.out.println(String.format("bugSort_1运行时长%s ns (%s ms)", time, time_ms));
-        return arr_done;
+        return arr;
     }
 
 }

@@ -4,8 +4,11 @@ import com.thunneycomb.thunneycombarchtype.TestNGCaseBase;
 import com.thunneycomb.thunneycombarchtype.utility.DataUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.web.servlet.result.StatusResultMatchers;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
 
 
 public class ArraysAlgorithmTest extends TestNGCaseBase {
@@ -63,5 +66,40 @@ public class ArraysAlgorithmTest extends TestNGCaseBase {
     public void maxProfit_1Test(int[] prices) {
         int max_profit = ArraysAlgorithm.maxProfit_1(prices);
         LOGGER.info("最大利润为 {}", max_profit);
+    }
+
+    @DataProvider
+    public  Object[][] dataSearchInsertTest () {
+        return DataUtility.getArrays("algorithm/searchInsertCases.json");
+    }
+
+    @Test(dataProvider = "dataSearchInsertTest")
+    public void searchInsertTest(int[] prices) {
+        int target = 7;
+        int index = ArraysAlgorithm.searchInsert(SortAlgorithm.quickSort(prices, 0, prices.length - 1), 7);
+        LOGGER.info(String.format("参数为%s， 插入的位置为 %s", target, index));
+    }
+
+    @Test(dataProvider = "dataSearchInsertTest")
+    public void searchInsert_1Test (int[] prices) {
+        int target = 7;
+        int index = ArraysAlgorithm.searchInsert_1(SortAlgorithm.quickSort(prices, 0, prices.length - 1), 7);
+        LOGGER.info(String.format("参数为%s， 插入的位置为 %s", target, index));
+    }
+
+    @Test(dataProvider = "dataSearchInsertTest")
+    public void searchInsert_2Test (int[] prices) {
+        int target = 7;
+        int index = ArraysAlgorithm.searchInsert_2(SortAlgorithm.quickSort(prices, 0, prices.length - 1),0,0, 7);
+        LOGGER.info(String.format("参数为%s， 插入的位置为 %s", target, index));
+    }
+
+    @Test(dataProvider = "dataSearchInsertTest")
+    public void aplusb_TargetTest (int[] prices) {
+        ArrayList nums_list = ArraysAlgorithm.aplusb_Target(prices, 5);
+        for (int i = 0; i < nums_list.size(); i++) {
+            int[] nums = (int[]) nums_list.get(i);
+            System.out.println(String.format("[%s, %s]",nums[0], nums[1]));
+        }
     }
 }

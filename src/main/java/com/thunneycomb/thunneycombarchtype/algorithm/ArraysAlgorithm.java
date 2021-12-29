@@ -1,7 +1,6 @@
 package com.thunneycomb.thunneycombarchtype.algorithm;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.thunneycomb.thunneycombarchtype.algorithm.SortAlgorithm.quickSort;
@@ -152,4 +151,140 @@ public class ArraysAlgorithm {
 
         return max_profit;
     }
+
+    public static int searchInsert(int[] nums, int target) {
+        /**
+         * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+         * 动态规划
+         * 1. 遍历数组， int i < target.length
+         * 2. 和target 比， 如果大于等于target ， 得到index = i，
+         */
+        int index = 0;
+        if (nums == null || nums.length == 0) return index;
+        if (nums[nums.length - 1] < target) return nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] >= target) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public static int searchInsert_1(int[] nums, int target) {
+        /**
+         * 1. 遍历数组
+         * 2. 如果遇到相等的， 插入位置等于其索引位置+1
+         * 3. 如果比完都没有遇到相等的， 插入位置等于输入长度
+         */
+        int index = 0;
+        while (index < nums.length) {
+            if (nums[index] >= target) {
+                return index;
+            } else {
+                index++;
+            }
+        }
+        return index;
+        /**
+         * 执行用时：
+         * 0 ms
+         * , 在所有 Java 提交中击败了
+         * 100.00%
+         * 的用户
+         * 内存消耗：
+         * 38.2 MB
+         * , 在所有 Java 提交中击败了
+         * 18.79%
+         * 的用户
+         * 通过测试用例：
+         * 64 / 64
+         */
+    }
+
+    public static int searchInsert_2(int[] nums, int start, int endd, int target) {
+        /**
+         * 1. 遍历数组
+         * 2. 如果遇到相等的， 插入位置等于其索引位置+1
+         * 3. 如果比完都没有遇到相等的， 插入位置等于输入长度
+         * ----
+         * TODO 优化项 ， 一个有序数组如果数组特别长，从头比会非常慢，需要有策略的完成切分
+         * 1. 默认index为0 ， 当nums.length > 某值 时，做切分策略
+         */
+        int index = 0;
+        int end = nums.length - 1;
+        int split = 10;
+        if (start > 0 ) index = start;
+        if (endd != 0) end = endd;
+
+        if (end - index > split) { // 这个值可以改，改到3就直接变成了二分法
+            if (nums[(end - index)/2 + index] > target) {
+                end = (end - index)/2 + index;
+                return searchInsert_2(nums, start, end, target);
+            }
+            if (nums[(end - index)/2 + index] == target) {
+                index = (end - index)/2 + index;
+                return index;
+            }
+            if (nums[(end - index)/2 + index] < target) {
+                start = (end - index)/2 + index;
+                return searchInsert_2(nums, start, end, target);
+            }
+        } else {
+            while (index < end) {
+                if (nums[index] >= target) return index;
+                else index++;
+            }
+            return index;
+        }
+        return index;
+        /**
+         * 执行用时：
+         * 0 ms
+         * , 在所有 Java 提交中击败了
+         * 100.00%
+         * 的用户
+         * 内存消耗：
+         * 38.2 MB
+         * , 在所有 Java 提交中击败了
+         * 15.58%
+         * 的用户
+         * 通过测试用例：
+         * 64 / 64
+         */
+    }
+
+    public static ArrayList aplusb_Target(int[] nums, int target) {
+        /**
+         * 查找数组中两个数相加等于入参目标数
+         */
+        ArrayList abl = new ArrayList();
+
+        for (int i = 0; i < nums.length; i++) {
+            for (int ii = 1; ii < nums.length; ii++) {
+                if ((nums[i] + nums[ii]) == target) {
+                    abl.add(new int[] {i, ii});
+                }
+            }
+        }
+        // TODO 优化 如果abl 中的 i == ii' , ii == i' 时， 干掉后面这个链
+        return abl;
+    }
+
+    public ArrayList stripList ( ArrayList num_list) {
+        ArrayList remove_list = new ArrayList();
+        int base = 0;
+        while (base < num_list.size() - 1) {
+            int[] numa = (int[])num_list.get(base);
+            while (base)
+        }
+        for (int i = 0; i < num_list.size(); i++) {
+
+            for (int ii = 1; ii < num_list.size(); ii++) {
+                int[] numb = (int[])num_list.get(ii);
+                if (numa[0] == numb[1] && numa[1] == numb[0])
+            }
+        }
+    }
+
 }
